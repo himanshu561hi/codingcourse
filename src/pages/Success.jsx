@@ -5,7 +5,11 @@ import { courses } from "../courses";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const paymentId = searchParams.get("razorpay_payment_id");
+
+  // ✅ MAIN FIX: Yahan hum dono tarah ki ID check kar rahe hain.
+  // 'payment_id' (Razorpay Links se aata hai) OR 'razorpay_payment_id' (Custom checkout se)
+  const paymentId =
+    searchParams.get("payment_id") || searchParams.get("razorpay_payment_id");
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +71,7 @@ const PaymentSuccess = () => {
           {course.title}
         </div>
 
-        {/* Payment Ref ID (Sirf tab dikhega jab asli payment hogi) */}
+        {/* Payment Ref ID (Ab ye asli payment par zaroor dikhega) */}
         {paymentId ? (
           <div className="flex items-center justify-center gap-2 mb-8 text-sm text-gray-500 bg-gray-50 py-2 rounded-lg">
             <span>
@@ -81,9 +85,9 @@ const PaymentSuccess = () => {
             </button>
           </div>
         ) : (
-          // Testing Mode Indicator
-          <div className="mb-6 text-xs text-orange-500 font-medium bg-orange-50 py-1 rounded">
-            (Testing Mode: No Payment ID)
+          // Testing Mode Indicator (Sirf tab dikhega jab URL me koi ID nahi hogi)
+          <div className="flex items-center justify-center gap-2 mb-8 text-sm text-yellow-600 bg-yellow-50 py-2 rounded-lg border border-yellow-100">
+            <span>Payment Done (Test Mode)</span>
           </div>
         )}
 
