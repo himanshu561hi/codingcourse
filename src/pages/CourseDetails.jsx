@@ -30,11 +30,19 @@ const CourseDetails = () => {
 
   // ✅ UPDATED PAYMENT LOGIC
   const handlePayment = () => {
-    // 1. Browser ke memory (LocalStorage) me save karo ki kaunsa course khareeda hai
-    // Taaki Success page par hum sahi Telegram Link dikha sakein
+    // 1. Console me print karo
+    console.log("Saving Course ID:", course.id);
+
+    // 2. Save karo
     localStorage.setItem("purchasedCourseId", course.id);
 
-    // 2. Ab Razorpay ke payment link par bhej do
+    // 3. Check karo ki save hua ya nahi (Turant padh ke dekho)
+    const check = localStorage.getItem("purchasedCourseId");
+
+    // 4. Alert dikhao (Isse humein pata chal jayega)
+    alert(`Debug: Course ID ${check} saved! Redirecting to Payment...`);
+
+    // 5. Ab Redirect karo
     window.location.href = course.paymentLink;
   };
 
