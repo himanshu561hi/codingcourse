@@ -50,7 +50,7 @@ export const courses = [
       image: aktuImg, 
       
       // Links
-      paymentLink: "https://rzp.io/rzp/yduLBIC",
+      paymentLink: "https://rzp.io/rzp/eY0gOvP",
       proofLink: "https://drive.google.com/drive/folders/YOUR_FOLDER_ID_HERE", 
       telegramLink: "https://t.me/Aktu_Notes_Quantum_book",
 
@@ -148,7 +148,7 @@ export const courses = [
       image: aimlImg,
       
       // Links
-      paymentLink: "https://rzp.io/rzp/yduLBIC",
+      paymentLink: "https://rzp.io/rzp/p16bukgo",
       proofLink: "", 
       telegramLink: "https://t.me/+LeoOSXBriq5iNzc9",
 
