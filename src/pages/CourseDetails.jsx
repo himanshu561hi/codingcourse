@@ -7,6 +7,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { courses } from "../courses";
+import CourseReviews from "../components/CourseReviews"; // Import Reviews
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -25,7 +26,7 @@ const CourseDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
-      {/* --- WRAPPER 1: Back Button (Centered aligned with content) --- */}
+      {/* --- WRAPPER 1: Back Button --- */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           to="/"
@@ -35,7 +36,7 @@ const CourseDetails = () => {
         </Link>
       </div>
 
-      {/* --- WRAPPER 2: Main Content Container (Fix for Centering) --- */}
+      {/* --- WRAPPER 2: Main Content --- */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* CARD START */}
         <div className="bg-white w-full rounded-3xl shadow-xl overflow-hidden border border-gray-100">
@@ -46,13 +47,12 @@ const CourseDetails = () => {
               src={course.image}
               alt={course.title}
             />
-            {/* Dark Overlay for depth */}
             <div className="absolute inset-0 bg-black/10"></div>
           </div>
 
           {/* Content Body */}
           <div className="p-6 md:p-12">
-            {/* --- 2. HEADER INFO (Centered) --- */}
+            {/* --- 2. HEADER INFO --- */}
             <div className="text-center max-w-4xl mx-auto mb-10">
               <span className="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold tracking-wide uppercase mb-4 border border-indigo-100">
                 Professional Course
@@ -62,7 +62,7 @@ const CourseDetails = () => {
               </h1>
             </div>
 
-            {/* --- 3. PRICING BOX (Centered) --- */}
+            {/* --- 3. PRICING BOX (Proof Button Retained & Dynamic Price) --- */}
             <div className="bg-indigo-50 rounded-2xl p-8 mb-12 border border-indigo-100 max-w-5xl mx-auto text-center shadow-sm">
               <p className="text-indigo-600 text-sm font-bold uppercase tracking-wider mb-2">
                 Special Offer Price
@@ -71,13 +71,15 @@ const CourseDetails = () => {
                 <span className="text-6xl font-extrabold text-gray-900">
                   {course.price}
                 </span>
+
+                {/* ✅ UPDATED: Dynamic Original Price from courses.js */}
                 <span className="text-2xl text-gray-400 line-through decoration-2">
-                  ₹12,000
+                  {course.originalPrice}
                 </span>
               </div>
 
               <div className="flex flex-col md:flex-row gap-5 justify-center max-w-3xl mx-auto">
-                {/* Proof Button */}
+                {/* ✅ PROOF BUTTON (As requested, retained) */}
                 <a
                   href={course.proofLink}
                   target="_blank"
@@ -101,7 +103,7 @@ const CourseDetails = () => {
               </p>
             </div>
 
-            {/* --- 4. DESCRIPTION (Centered & Readable) --- */}
+            {/* --- 4. DESCRIPTION --- */}
             <div className="max-w-4xl mx-auto prose prose-lg text-gray-600 mb-16 text-center md:text-left">
               <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
                 About the Course
@@ -117,14 +119,13 @@ const CourseDetails = () => {
               </p>
             </div>
 
-            {/* --- 5. HIGHLIGHTS SECTION (3 Columns Grid) --- */}
+            {/* --- 5. HIGHLIGHTS SECTION --- */}
             <div className="max-w-7xl mx-auto">
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100">
                 <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center flex items-center justify-center gap-2">
                   <CheckCircle className="text-indigo-600" /> What's Included?
                 </h3>
 
-                {/* Grid Layout Fix */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {course.features.map((feature, index) => (
                     <div
@@ -145,6 +146,11 @@ const CourseDetails = () => {
           </div>
         </div>
         {/* CARD END */}
+
+        {/* --- 6. REVIEWS SECTION --- */}
+        <div className="mt-12">
+          <CourseReviews reviews={course.reviews} />
+        </div>
       </div>
     </div>
   );
