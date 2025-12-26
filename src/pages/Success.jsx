@@ -87,7 +87,7 @@ const PaymentSuccess = () => {
         ) : (
           // Testing Mode Indicator (Sirf tab dikhega jab URL me koi ID nahi hogi)
           <div className="flex items-center justify-center gap-2 mb-8 text-sm text-yellow-600 bg-yellow-50 py-2 rounded-lg border border-yellow-100">
-            <span>Payment Done (Test Mode)</span>
+            <span>Payment Done</span>
           </div>
         )}
 
