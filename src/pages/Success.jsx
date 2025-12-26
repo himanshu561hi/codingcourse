@@ -6,14 +6,15 @@ import {
   Send,
   Copy,
   Loader2,
-  AlertCircle,
+  Lock,
 } from "lucide-react";
 import { courses } from "../courses";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
 
-  // URL se ID nikalne ki koshish (Agar Razorpay ne bheja ho)
+  // 1. PAYMENT ID EXTRACTION (Strict Check)
+  // Hum in teeno keys ko check karenge. Agar ek bhi mil gayi, matlab payment asli hai.
   const paymentId =
     searchParams.get("payment_id") ||
     searchParams.get("razorpay_payment_id") ||
@@ -21,26 +22,20 @@ const PaymentSuccess = () => {
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [accessGranted, setAccessGranted] = useState(false);
 
   useEffect(() => {
-    // 1. Check karo ki user ne "Pay Now" dabaya tha ya nahi (LocalStorage)
+    // 2. Course Details dhoondo (LocalStorage se)
+    // Dhyan dein: Ye sirf "Kaunsa Course hai" ye janne ke liye hai.
+    // Ye ACCESS dene ke liye nahi hai.
     const savedCourseId = localStorage.getItem("purchasedCourseId");
 
     if (savedCourseId) {
       const foundCourse = courses.find((c) => c.id === parseInt(savedCourseId));
       setCourse(foundCourse);
-      setAccessGranted(true); // ✅ Access de do kyunki user genuine hai
-    }
-    // Agar LocalStorage khali hai lekin URL me Payment ID hai (Rare case)
-    else if (paymentId) {
-      // Fallback: Default course (ya error) dikha sakte hain.
-      // Filhal hum access deny karenge agar dono missing hain.
-      setAccessGranted(false);
     }
 
     setLoading(false);
-  }, [paymentId]);
+  }, []);
 
   if (loading) {
     return (
@@ -50,32 +45,42 @@ const PaymentSuccess = () => {
     );
   }
 
-  // 🔒 CASE 1: ACCESS DENIED (Na LocalStorage hai, Na Payment ID)
-  if (!accessGranted && !paymentId) {
+  // 🔒 STRICT SECURITY GATE 🔒
+  // Agar URL mein Payment ID nahi hai -> To seedha BLOCK karo.
+  // Chahe user ne "Pay Now" dabaya ho ya nahi, bina ID ke entry nahi milegi.
+  if (!paymentId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white p-8 rounded-2xl shadow-lg border border-red-100 max-w-md w-full">
+        <div className="text-center bg-white p-8 rounded-2xl shadow-lg border border-red-100 max-w-md w-full animate-fade-in-up">
           <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-100 mb-6">
-            <AlertCircle className="h-10 w-10 text-red-600" />
+            <Lock className="h-10 w-10 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Access Denied
           </h2>
-          <p className="text-gray-500 mb-6">
-            Direct access not allowed. Please buy a course first.
+          <p className="text-gray-500 mb-6 leading-relaxed">
+            Security Check Failed. <br />
+            Humein URL mein valid <strong>Payment ID</strong> nahi mili.
           </p>
+          <div className="bg-red-50 p-3 rounded-lg text-xs text-red-800 mb-6 text-left">
+            <strong>Kyun hua ye?</strong>
+            <br />
+            1. Aapne bina payment kiye page khola hai.
+            <br />
+            2. Ya payment fail ho gayi hai.
+          </div>
           <Link
             to="/"
-            className="block w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors"
+            className="block w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-200"
           >
-            Go to Home
+            Go back to Home
           </Link>
         </div>
       </div>
     );
   }
 
-  // ✅ CASE 2: SUCCESS (Access Granted)
+  // ✅ SUCCESS SCREEN (Ye tabhi dikhega jab Payment ID hogi)
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
       <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl text-center max-w-lg w-full border border-gray-100 animate-fade-in-up">
@@ -88,36 +93,36 @@ const PaymentSuccess = () => {
         </h2>
         <p className="text-gray-500 mb-6">You have successfully purchased:</p>
 
-        {/* Course Name */}
+        {/* Course Info */}
         {course ? (
           <div className="bg-indigo-50 text-indigo-800 px-6 py-4 rounded-xl font-bold text-lg mb-6 border border-indigo-100 shadow-sm">
             {course.title}
           </div>
         ) : (
-          <div className="text-red-500 mb-6">Course info not found</div>
+          // Agar Payment ID asli hai par Course LocalStorage se gayab ho gaya
+          <div className="bg-yellow-50 text-yellow-800 px-6 py-4 rounded-xl font-bold text-sm mb-6 border border-yellow-100">
+            Course details loading error. <br />
+            (But Payment is Verified ✅)
+          </div>
         )}
 
-        {/* Ref ID Section (Smart Display) */}
-        {paymentId ? (
-          <div className="flex items-center justify-center gap-2 mb-8 text-sm text-gray-500 bg-gray-50 py-2 rounded-lg">
-            <span>
-              Ref ID:{" "}
-              <span className="font-mono font-bold text-gray-700">
-                {paymentId}
-              </span>
+        {/* Payment Verified & Ref ID */}
+        <div className="flex items-center justify-center gap-2 mb-8 text-sm text-gray-500 bg-gray-50 py-2 rounded-lg">
+          <span>
+            Ref ID:{" "}
+            <span className="font-mono font-bold text-gray-700">
+              {paymentId}
             </span>
-            <button onClick={() => navigator.clipboard.writeText(paymentId)}>
-              <Copy size={14} />
-            </button>
-          </div>
-        ) : (
-          // Agar Razorpay ne ID nahi bheji, tab bhi user ko pareshan mat karo
-          <div className="flex items-center justify-center gap-2 mb-8 text-xs text-orange-500 bg-orange-50 py-2 rounded-lg border border-orange-100 px-4">
-            <span>Payment Verified (ID sent to Email)</span>
-          </div>
-        )}
+          </span>
+          <button
+            onClick={() => navigator.clipboard.writeText(paymentId)}
+            title="Copy ID"
+          >
+            <Copy size={14} />
+          </button>
+        </div>
 
-        {/* TELEGRAM LINK */}
+        {/* TELEGRAM LINK (Protected Content) */}
         <div className="bg-[#f0f9ff] p-6 rounded-2xl mb-8 border border-[#bae6fd] shadow-sm">
           <h3 className="font-bold text-[#0c4a6e] mb-2 text-lg">
             👇 Access Your Content
