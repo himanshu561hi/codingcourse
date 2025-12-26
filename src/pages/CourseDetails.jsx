@@ -13,14 +13,28 @@ const CourseDetails = () => {
   const { id } = useParams();
   const course = courses.find((c) => c.id === parseInt(id));
 
+  // Agar course na mile to Error dikhayein
   if (!course)
     return (
-      <div className="text-center mt-20 text-2xl font-bold text-red-500">
-        Course not found!
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Course Not Found
+          </h2>
+          <Link to="/" className="text-indigo-600 hover:underline">
+            Go Back Home
+          </Link>
+        </div>
       </div>
     );
 
+  // ✅ UPDATED PAYMENT LOGIC
   const handlePayment = () => {
+    // 1. Browser ke memory (LocalStorage) me save karo ki kaunsa course khareeda hai
+    // Taaki Success page par hum sahi Telegram Link dikha sakein
+    localStorage.setItem("purchasedCourseId", course.id);
+
+    // 2. Ab Razorpay ke payment link par bhej do
     window.location.href = course.paymentLink;
   };
 
@@ -39,14 +53,21 @@ const CourseDetails = () => {
       {/* --- WRAPPER 2: Main Content --- */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* CARD START */}
-        <div className="bg-white w-full rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div className="bg-white w-full rounded-3xl shadow-xl overflow-hidden border border-gray-100 animate-fade-in-up">
           {/* --- 1. BANNER IMAGE --- */}
           <div className="w-full h-64 md:h-96 relative">
-            <img
-              className="w-full h-full object-cover"
-              src={course.image}
-              alt={course.title}
-            />
+            {/* Agar image exist karti hai to wo dikhaye, nahi to placeholder */}
+            {course.image ? (
+              <img
+                className="w-full h-full object-cover"
+                src={course.image}
+                alt={course.title}
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                No Image Available
+              </div>
+            )}
             <div className="absolute inset-0 bg-black/10"></div>
           </div>
 
@@ -62,7 +83,7 @@ const CourseDetails = () => {
               </h1>
             </div>
 
-            {/* --- 3. PRICING BOX (Proof Button Retained & Dynamic Price) --- */}
+            {/* --- 3. PRICING BOX --- */}
             <div className="bg-indigo-50 rounded-2xl p-8 mb-12 border border-indigo-100 max-w-5xl mx-auto text-center shadow-sm">
               <p className="text-indigo-600 text-sm font-bold uppercase tracking-wider mb-2">
                 Special Offer Price
@@ -72,25 +93,27 @@ const CourseDetails = () => {
                   {course.price}
                 </span>
 
-                {/* ✅ UPDATED: Dynamic Original Price from courses.js */}
+                {/* Original Price */}
                 <span className="text-2xl text-gray-400 line-through decoration-2">
                   {course.originalPrice}
                 </span>
               </div>
 
               <div className="flex flex-col md:flex-row gap-5 justify-center max-w-3xl mx-auto">
-                {/* ✅ PROOF BUTTON (As requested, retained) */}
-                <a
-                  href={course.proofLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full md:w-1/2 px-8 py-4 rounded-xl font-bold text-lg border-2 border-indigo-600 text-indigo-700 bg-white hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
-                >
-                  <ExternalLink size={20} />
-                  View Proofs/Samples
-                </a>
+                {/* Proof Button */}
+                {course.proofLink && (
+                  <a
+                    href={course.proofLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full md:w-1/2 px-8 py-4 rounded-xl font-bold text-lg border-2 border-indigo-600 text-indigo-700 bg-white hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <ExternalLink size={20} />
+                    View Proofs/Samples
+                  </a>
+                )}
 
-                {/* Pay Button */}
+                {/* Pay Button (Updated Function) */}
                 <button
                   onClick={handlePayment}
                   className="w-full md:w-1/2 px-8 py-4 rounded-xl font-bold text-lg text-white bg-indigo-600 shadow-lg hover:bg-indigo-700 hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
@@ -149,6 +172,7 @@ const CourseDetails = () => {
 
         {/* --- 6. REVIEWS SECTION --- */}
         <div className="mt-12">
+          {/* Reviews Component ko reviews pass kiye */}
           <CourseReviews reviews={course.reviews} />
         </div>
       </div>
