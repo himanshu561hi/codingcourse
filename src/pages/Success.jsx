@@ -132,33 +132,31 @@ import {
   Send,
   Copy,
   Loader2,
-  XCircle,
+  Bug,
 } from "lucide-react";
 import { courses } from "../courses";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
 
-  // 1. URL se Payment ID nikaalo
+  // URL se saare parameters nikal kar dekhte hain kya aa raha hai
+  const allParams = Object.fromEntries([...searchParams]);
+
+  // ID check karne ki koshish (Common names)
   const paymentId =
-    searchParams.get("payment_id") || searchParams.get("razorpay_payment_id");
+    searchParams.get("payment_id") ||
+    searchParams.get("razorpay_payment_id") ||
+    searchParams.get("razorpay_payment_link_reference_id");
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 2. LocalStorage se Course ID nikalo
-    const savedCourseId = localStorage.getItem("purchasedCourseId");
-
+    let savedCourseId = localStorage.getItem("purchasedCourseId");
     if (savedCourseId) {
       const foundCourse = courses.find((c) => c.id === parseInt(savedCourseId));
       setCourse(foundCourse);
     }
-
-    // Safai: Page load hone ke baad ID hata do taaki reload pe access na mile
-    // (Optional: Agar aap chahte hain reload pe bhi content dikhe to ye line hata dein)
-    // localStorage.removeItem("purchasedCourseId");
-
     setLoading(false);
   }, []);
 
@@ -170,45 +168,40 @@ const PaymentSuccess = () => {
     );
   }
 
-  // 🔒 SECURITY CHECK: Agar Payment ID nahi hai URL me
+  // 🕵️‍♂️ DEBUG MODE: Agar ID nahi mili to ye dikhao
   if (!paymentId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white p-8 rounded-2xl shadow-lg border border-red-100 max-w-md w-full">
-          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-100 mb-6">
-            <XCircle className="h-10 w-10 text-red-600" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+        <div className="bg-white p-8 rounded-2xl shadow-lg max-w-2xl w-full border border-orange-200">
+          <div className="flex items-center gap-3 mb-4 text-orange-600">
+            <Bug size={32} />
+            <h2 className="text-2xl font-bold">Debug Mode On</h2>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Access Denied!
-          </h2>
-          <p className="text-gray-500 mb-6">
-            We could not verify your payment. Please complete the payment to
-            access this course.
-          </p>
-          <Link
-            to="/"
-            className="block w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors"
-          >
-            Go to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
-  // Agar Course ID nahi mili (but Payment ID hai - Rare case)
-  if (!course) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white p-8 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            Course Details Not Found
-          </h2>
-          <p className="text-gray-500 mb-4">Payment ID: {paymentId}</p>
-          <p className="text-sm text-gray-400 mb-6">
-            Please contact support with this ID.
+          <p className="text-gray-600 mb-4">
+            Payment ho gayi hai lekin ID match nahi ho rahi. Neeche dekhein URL
+            mein kya aaya hai:
           </p>
-          <Link to="/" className="text-indigo-600 hover:underline">
+
+          <div className="bg-gray-900 text-green-400 p-4 rounded-xl font-mono text-sm overflow-auto mb-6">
+            <p className="mb-2 text-white border-b border-gray-700 pb-2">
+              URL Data Received:
+            </p>
+            {Object.keys(allParams).length === 0 ? (
+              <span className="text-red-400">
+                No Parameters Found in URL (URL khali hai)
+              </span>
+            ) : (
+              <pre>{JSON.stringify(allParams, null, 2)}</pre>
+            )}
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 mb-6">
+            <strong>Action:</strong> Is screen ka screenshot lekar mujhe
+            bhejein.
+          </div>
+
+          <Link to="/" className="text-indigo-600 hover:underline font-bold">
             Go Home
           </Link>
         </div>
@@ -216,7 +209,7 @@ const PaymentSuccess = () => {
     );
   }
 
-  // ✅ SAB KUCH SAHI HAI (Payment ID + Course ID dono hain)
+  // ✅ NORMAL SUCCESS SCREEN (Agar ID mil gayi)
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
       <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl text-center max-w-lg w-full border border-gray-100 animate-fade-in-up">
@@ -227,13 +220,17 @@ const PaymentSuccess = () => {
         <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
           Payment Successful!
         </h2>
-        <p className="text-gray-500 mb-6">You have successfully purchased:</p>
 
-        <div className="bg-indigo-50 text-indigo-800 px-6 py-4 rounded-xl font-bold text-lg mb-6 border border-indigo-100 shadow-sm">
-          {course.title}
-        </div>
+        {/* Course Info */}
+        {course ? (
+          <div className="bg-indigo-50 text-indigo-800 px-6 py-4 rounded-xl font-bold text-lg mb-6 border border-indigo-100 shadow-sm">
+            {course.title}
+          </div>
+        ) : (
+          <p className="text-red-500 mb-4">Course ID Missing from Storage</p>
+        )}
 
-        {/* Ref ID Box */}
+        {/* Ref ID */}
         <div className="flex items-center justify-center gap-2 mb-8 text-sm text-gray-500 bg-gray-50 py-2 rounded-lg">
           <span>
             Ref ID:{" "}
@@ -241,23 +238,15 @@ const PaymentSuccess = () => {
               {paymentId}
             </span>
           </span>
-          <button onClick={() => navigator.clipboard.writeText(paymentId)}>
-            <Copy size={14} />
-          </button>
         </div>
 
-        {/* TELEGRAM LINK (Ab ye tabhi dikhega jab Payment ID hogi) */}
+        {/* Telegram Link */}
         <div className="bg-[#f0f9ff] p-6 rounded-2xl mb-8 border border-[#bae6fd] shadow-sm">
           <h3 className="font-bold text-[#0c4a6e] mb-2 text-lg">
             👇 Access Your Content
           </h3>
-          <p className="text-[#0369a1] text-sm mb-5 leading-relaxed">
-            Neeche diye gaye button par click karke turant{" "}
-            <strong>Private Telegram Channel</strong> join karein.
-          </p>
-
           <a
-            href={course.telegramLink}
+            href={course?.telegramLink || "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center px-6 py-4 bg-[#229ED9] text-white rounded-xl font-bold text-lg hover:bg-[#1A8LB5] transition-all shadow-lg hover:shadow-[#229ED9]/30 transform hover:-translate-y-1 gap-2"
@@ -269,7 +258,7 @@ const PaymentSuccess = () => {
 
         <Link
           to="/"
-          className="text-gray-400 hover:text-gray-600 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+          className="text-gray-400 hover:text-gray-600 text-sm font-medium flex items-center justify-center gap-2"
         >
           <ArrowRight size={16} className="rotate-180" /> Back to All Courses
         </Link>
