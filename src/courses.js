@@ -51,7 +51,7 @@ export const courses = [
       image: aktuImg, 
       
       // Links
-      paymentLink: "https://rzp.io/rzp/75VFkSw3",
+      paymentLink: "https://rzp.io/rzp/yduLBIC",
       proofLink: "https://drive.google.com/drive/folders/1Ex_DKue89a1S_sAUPELzsTSRbOiHyIPv", 
       telegramLink: "https://t.me/Aktu_Notes_Quantum_book",
 
@@ -149,7 +149,7 @@ export const courses = [
       image: aimlImg,
       
       // Links
-      paymentLink: "https://rzp.io/rzp/75VFkSw3",
+      paymentLink: "https://rzp.io/rzp/yduLBIC",
       proofLink: "https://drive.google.com/drive/folders/1qoozrQrrTP2aGdCaYfiIRnh571XMuvJC", 
       telegramLink: "https://t.me/+LeoOSXBriq5iNzc9",
 
@@ -192,7 +192,7 @@ export const courses = [
       image: dataScienceImg,
       
       // Links
-      paymentLink: "https://rzp.io/rzp/75VFkSw3",
+      paymentLink: "https://rzp.io/rzp/yduLBIC",
       proofLink: "https://drive.google.com/drive/folders/1T92ykJSUqJ_PwUTRVim5SMujYViR_WcY", 
       telegramLink: "https://t.me/+FxVrix02pltmNzc9",
 
