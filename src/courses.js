@@ -1,0 +1,46 @@
+// src/courses.js
+export const courses = [
+    {
+      id: 1,
+      title: "AKTU All Subject Notes Available",
+      price: "₹99.00",
+      description: "📚 AKTU Complete Notes & Quantum Access All Subjects\n\nIs package ke through aap AKTU ke almost saare subjects ke notes + quantum (question banks) access kar sakte ho. Ye notes B.Tech ke sabhi years ke liye useful hain.",
+      features: [
+        "Mathematics (M1, M2, M4)",
+        "Physics",
+        "Operating System (OS)",
+        "Computer Networks (CN)",
+        "DBMS",
+        "DAA (Design & Analysis of Algorithms)",
+        "Software Engineering (SE)",
+        "Software Project Management (SPM)",
+        "Web Technology",
+        "Cloud Computing",
+        "Artificial Intelligence (AI)",
+        "Machine Learning (ML)",
+        "Deep Learning",
+        "Image Analytics",
+        "Python Programming",
+        "Computer Graphics",
+        "Cryptography & Network Security",
+        "Internet of Things (IoT)",
+        "Natural Language Processing (NLP)",
+        "VLSI Technology",
+        "Basic Signals & Systems (BSS)",
+        "Electrical Engineering",
+        "Electronics (1st Year)",
+        "Energy Science / Renewable Energy",
+        "FME (Mechanical)",
+        "Material Science",
+        "PPS",
+        "Constitution of India (COI)",
+        "Soft Skills",
+        "Technical Communication",
+        "All Subjects PYQs (Previous Year Questions)"
+      ],
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+      paymentLink: "https://rzp.io/rzp/eY0gOvP",
+      proofLink: "https://drive.google.com/drive/folders/YOUR_FOLDER_ID_HERE", 
+      telegramLink: "https://t.me/Aktu_Notes_Quantum_book" 
+    }
+  ];
