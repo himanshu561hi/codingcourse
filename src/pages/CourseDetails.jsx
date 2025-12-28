@@ -39,9 +39,6 @@ const CourseDetails = () => {
     // 3. Check karo ki save hua ya nahi (Turant padh ke dekho)
     const check = localStorage.getItem("purchasedCourseId");
 
-    // 4. Alert dikhao (Isse humein pata chal jayega)
-    alert(`Debug: Course ID ${check} saved! Redirecting to Payment...`);
-
     // 5. Ab Redirect karo
     window.location.href = course.paymentLink;
   };
