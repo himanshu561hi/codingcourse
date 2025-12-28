@@ -149,7 +149,7 @@ export const courses = [
       image: aimlImg,
       
       // Links
-      paymentLink: "https://rzp.io/rzp/yduLBIC",
+      paymentLink: "https://rzp.io/rzp/p16bukgo",
       proofLink: "https://drive.google.com/drive/folders/1qoozrQrrTP2aGdCaYfiIRnh571XMuvJC", 
       telegramLink: "https://t.me/+LeoOSXBriq5iNzc9",
 
